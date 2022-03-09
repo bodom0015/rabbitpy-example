@@ -2,7 +2,7 @@ import os
 import logging
 import sys
 import time
-from agent.rabbitpy_wrapper import rabbitpy_emitter as emitter
+from agent.emitter import rabbitpy_emitter as emitter
 
 DEBUG = os.getenv('DEBUG', 'true').lower() in ('true', '1', 't')
 

@@ -6,6 +6,8 @@ from tasks.ExampleTask import ExampleTask
 
 from constants import RABBITMQ_URI, RABBITMQ_EXCHANGE
 
+from emitter import RabbitMqEmitter
+
 RABBITMQ_CALLBACKS = {
     'QueueAwaker': QueueAwaker().rabbitpy_callback,
     'ExampleTask': ExampleTask().rabbitpy_callback,
@@ -13,9 +15,10 @@ RABBITMQ_CALLBACKS = {
 
 # RabbitMqEmitter is used to consume messages from a specific queue
 # It is advised to run only one listener per-container so that they can be easily scaled up and down
-class RabbitMqListener:
+class RabbitMqListener(RabbitMqEmitter):
 
     def __init__(self, queue_name):
+        super().__init__()
         self.logger = logging.getLogger('agent.agent.rabbit.RabbitMqEmitter')
         self.connection = rabbitpy.Connection(url=RABBITMQ_URI)
         self.channel = self.connection.channel()

@@ -6,12 +6,16 @@ from agent.tasks.ExampleTask import ExampleTask
 
 from agent.constants import RABBITMQ_URI, RABBITMQ_EXCHANGE
 
+# See bottom of file for notes on comparing to pika
+from agent.pika_alternative import RabbitMqEmitter as ClassicPikaRabbitMqEmitter
+
 # AMQP Connection
 
 RABBITMQ_CALLBACKS = {
     'QueueAwaker': QueueAwaker().rabbitpy_callback,
     'ExampleTask': ExampleTask().rabbitpy_callback,
 }
+
 
 
 # RabbitMqEmitter is used to publish messages to a specific queue
@@ -58,3 +62,14 @@ class RabbitMqEmitter:
         self.cleanup()
         self.logger.debug(' [×] Stopped emitter')
 
+
+# A simple wrapper to create a singleton emitter for the entire application
+# Use the following import to access this same emitter from anywhere:
+#
+#     from agent.emitter import rabbitpy_emitter as emitter
+#
+#
+rabbitpy_emitter = RabbitMqEmitter()
+
+# Replace the line above with this one to compare with a classic pika-based implementation
+#rabbitpy_emitter = ClassicPikaRabbitMqEmitter()

@@ -88,8 +88,9 @@ python ./agent/main.py
 ## Emitter
 The emitter is a singleton that can publish messages to any queue. From anywhere in the main application,
 we can use the following import to access the existing instance of the emitter:
+
 ```python
-from agent.rabbitpy_wrapper import rabbitpy_emitter as emitter
+from agent.emitter import rabbitpy_emitter as emitter
 ```
 
 We can use this emitter to publish messages to a particular queue using the `routing_key`:

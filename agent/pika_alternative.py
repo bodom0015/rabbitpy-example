@@ -1,6 +1,8 @@
+import json
 import logging
 import os
 import pika
+
 from pika import exceptions as pika_exceptions
 
 from agent.tasks.QueueAwaker import QueueAwaker
@@ -10,8 +12,8 @@ from agent.constants import TaskNames, RABBITMQ_EXCHANGE, RABBITMQ_URI
 # A classic pika-based emitter and listener, for comparison
 
 RABBITMQ_CALLBACKS = {
-    'QueueAwaker': QueueAwaker.rmq_callback,
-    'ExampleTask': ExampleTask.rmq_callback,
+    'QueueAwaker': QueueAwaker.pika_callback,
+    'ExampleTask': ExampleTask.pika_callback,
 }
 
 
@@ -21,14 +23,14 @@ class RabbitMqEmitter:
         self.connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URI))
         self.channel = self.connection.channel()
 
-    def send(self, routing_key, body):
+    def publish(self, routing_key, body):
         self.channel.queue_declare(queue=routing_key, durable=True)
         self.channel.basic_publish(exchange=RABBITMQ_EXCHANGE,
                                    routing_key=routing_key,
                                    properties=pika.BasicProperties(
                                        delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
                                    ),
-                                   body=body)
+                                   body=bytearray(json.dumps(body), 'utf-8'))
 
     def close(self):
         self.logger.debug(" [x] Shutting down emitter")
