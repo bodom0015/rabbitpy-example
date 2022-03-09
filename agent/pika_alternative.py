@@ -39,22 +39,22 @@ class RabbitMqEmitter:
 
 class RabbitMqListener(RabbitMqEmitter):
 
-    def __init__(self, queue, callback):
+    def __init__(self, queue):
         super().__init__()
         self.queue_name = queue
         self.logger = logging.getLogger('agent.agent.rabbit.RabbitMqListener.%s' % queue)
         self.channel.queue_declare(queue=queue, durable=True)
-        self.listen(queue=queue, callback=callback)
+        self.callback = RABBITMQ_CALLBACKS[queue]
 
     # TODO: Expand this to multiple Threads? (one listener thread per-task?)
-    def listen(self, queue, callback):
-        self.logger.debug(" [✓] Started listening on queue: %s" % queue)
+    def start_consuming(self):
+        self.logger.debug(" [✓] Started listening on queue: %s" % self.queue_name)
         while True:
             try:
                 self.channel.basic_qos(prefetch_count=1)
-                self.channel.basic_consume(queue=queue,
+                self.channel.basic_consume(queue=self.queue_name,
                                            auto_ack=False,
-                                           on_message_callback=callback)
+                                           on_message_callback=self.callback)
                 self.channel.start_consuming()
 
             except pika_exceptions.ConnectionClosedByBroker:

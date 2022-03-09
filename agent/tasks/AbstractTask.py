@@ -6,7 +6,6 @@ import time
 class AbstractTask(ABC):
 
     @staticmethod
-    @abstractmethod
     def get_name():
         pass
 

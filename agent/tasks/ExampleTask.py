@@ -12,5 +12,5 @@ class ExampleTask(AbstractTask):
 
     def run_task(self, body):
         # ExampleTask just waits for 12 seconds
-        time.sleep(12)
+        time.sleep(5)
 
