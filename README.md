@@ -53,7 +53,7 @@ docker build -t rabbitpy-listener -f agent/Dockerfile agent
 
 To run the `rabbitpy-emitter` (main application / publisher):
 ```bash
-docker run -d --rm \
+docker run -it --rm \
            -e RABBITMQ_URI='amqp://guest:guest@localhost:5672/%2f' \
            -e RABBITMQ_EXCHANGE='' \
            rabbitpy-emitter
@@ -61,7 +61,7 @@ docker run -d --rm \
 
 To run the `rabbitpy-listener` (scalable agents / runners):
 ```bash
-docker run -d --rm \
+docker run -it --rm \
            -e RABBITMQ_URI='amqp://guest:guest@localhost:5672/%2f' \
            -e RABBITMQ_EXCHANGE='' \
            -e RABBITMQ_QUEUENAME='ExampleTask' \
